@@ -14,65 +14,71 @@ import it.polito.tdp.dizionario.db.WordDAO;
 
 public class Model {
 	
-	private WordDAO w = new WordDAO ();
-	UndirectedGraph <String, DefaultEdge> grafo = new SimpleGraph <String, DefaultEdge>(DefaultEdge.class);
+	private WordDAO w;
+	private UndirectedGraph <String, DefaultEdge> grafo; 
+	private List <String> listaParole;
+	
 
+	public Model(){
+		w = new WordDAO();
+	}
+	
+	public List<String> getWordsFixedLength (int numeroLettere){
+		return listaParole = w.getAllWordsFixedLength(numeroLettere);
+	}
+	
 	public List<String> createGraph(int numeroLettere) {
-		ArrayList <String> elenco = (ArrayList<String>) w.getAllWordsFixedLength(numeroLettere);
 		
-		UndirectedGraph <String, DefaultEdge> grafo = new SimpleGraph <String, DefaultEdge>(DefaultEdge.class);
+		this.getWordsFixedLength(numeroLettere);
+		grafo = new SimpleGraph <String, DefaultEdge>(DefaultEdge.class);
 		
 		//Aggiungo i vertici
-		for(String s : elenco){
+		for(String s : listaParole){
 			grafo.addVertex(s);
 		}
 		
 		//Aggiungo gli archi
 		for( String vertex  : grafo.vertexSet() ){
-			elenco.remove(vertex);
+			listaParole.remove(vertex);
 			for(int j =0; j<vertex.length(); j++){
 				for(char c = 'a'; c<= 'z'; c++){
 					String primaMeta = vertex.substring(0,j);
 					String secondaMeta = vertex.substring(j+1);
 					String parola = primaMeta + c + secondaMeta;
 					
-					for( String s: elenco){
-						if( parola.equals(s) ){
+					for( String s: listaParole){
+						if( s.equals(parola) ){
 							grafo.addEdge(vertex,  s);
 						}
 					}
 				}
 			}
-			elenco.add(vertex);
+			listaParole.add(vertex);
 		}
-		
-	
 		
 		//stampo il grafo
 		
-		List <String> lista = new LinkedList<String>();
+		List <String> archi = new ArrayList<String>();
 		for(DefaultEdge arch : grafo.edgeSet() ){
 			
 			String arco = "{" + grafo.getEdgeSource(arch) + "," + grafo.getEdgeTarget(arch) + "}\n";
-			lista.add(arco);
+			archi.add(arco);
 		}
 		
-		String nodi = "[";
+		List <String> nodi = new ArrayList <String>();
 		for( String vertex  : grafo.vertexSet() ){
-			nodi = nodi+ " "+ vertex ;
+			String nodo = vertex + "\n";
+			nodi.add(nodo);
 		}
-		nodi = nodi + " ]";
-		
-		((LinkedList<String>) lista).addFirst(nodi);
 	
-		return lista;
+		nodi.addAll(archi);
+		return nodi;
+	
 	}
 
 	public List<String> displayNeighbours(String parolaInserita) {
 		this.createGraph(parolaInserita.length());
 		return Graphs.neighborListOf(grafo, parolaInserita);
-		
-	//	return new ArrayList<String>();
 	}
 
 	public String findMaxDegree() {
@@ -84,7 +90,8 @@ public class Model {
 				maxVertex = vertex;
 			}
 		}
-		String risultato = maxVertex + ": grado " + max + "\n";
+		String risultato = "Grado massimo:\n";
+		risultato += maxVertex + ": grado " + max + "\n";
 		risultato += this.displayNeighbours(maxVertex);
 		return risultato;
 	}

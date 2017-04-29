@@ -38,7 +38,6 @@ public class DizionarioController {
 		inputParola.clear();
 		txtResult.clear();
 	//  bisogna "cancellare " il grafo?	
-	//	txtResult.setText("Reset!");
 	}
 
 	@FXML
@@ -46,6 +45,9 @@ public class DizionarioController {
 
 		try {
 			String numeroLettere = inputNumeroLettere.getText();
+			if( inputNumeroLettere.getText().isEmpty()){
+				txtResult.setText("ERRORE, nessun numero inserito!");
+			}
 			int numero = Integer.parseInt(numeroLettere);
 			List <String> grafo = this.model.createGraph(numero);
 			for(String s : grafo){
@@ -54,14 +56,16 @@ public class DizionarioController {
 			
 		} catch (RuntimeException re) {
 			txtResult.setText(re.getMessage());
-		}
+		} 
 	}
 
 	@FXML
 	void doTrovaGradoMax(ActionEvent event) {
 		
 		try {
+			// se non ce il grafo?
 			txtResult.setText(model.findMaxDegree());
+			inputNumeroLettere.clear();
 
 		} catch (RuntimeException re) {
 			txtResult.setText(re.getMessage());
@@ -73,9 +77,15 @@ public class DizionarioController {
 		
 		try {
 			String parola = inputParola.getText();
+			if( inputParola.getText().isEmpty()){
+				txtResult.setText("ERRORE, nessuna parola inserita!");
+			}
+			inputParola.setText(parola);
+			inputNumeroLettere.setText(String.valueOf(parola.length()));
+			txtResult.appendText("Lista dei vicini di '" + parola + "':\n");
 			List <String> vicini = model.displayNeighbours(parola);
 			for(String s : vicini){
-				txtResult.setText(s);
+				txtResult.appendText(s + " ");
 			}
 
 		} catch (RuntimeException re) {

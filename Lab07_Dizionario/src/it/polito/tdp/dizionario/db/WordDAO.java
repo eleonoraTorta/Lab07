@@ -14,8 +14,28 @@ public class WordDAO {
 	 */
 	public List<String> getAllSimilarWords(String parola, int numeroLettere) {
 		
-		System.out.println("WordDAO -- TODO");
-		return new ArrayList<String>();
+		Connection conn = DBConnect.getInstance().getConnection();
+		String sql = "SELECT nome FROM parola WHERE LENGTH(nome) = ? AND ;";
+		PreparedStatement st;
+
+		try {
+
+			st = conn.prepareStatement(sql);
+			st.setInt(1, numeroLettere);
+			ResultSet res = st.executeQuery();
+
+			List<String> parole = new ArrayList<String>();
+
+			while (res.next())
+				parole.add(res.getString("nome"));
+
+			return parole;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Errore connessione al database");
+			throw new RuntimeException("Error Connection Database");
+		}
 	}
 
 	/*
