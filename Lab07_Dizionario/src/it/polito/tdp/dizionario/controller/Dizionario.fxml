@@ -7,19 +7,20 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polito.tdp.dizionario.controller.DizionarioController">
+<BorderPane prefHeight="393.0" prefWidth="541.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="it.polito.tdp.dizionario.controller.DizionarioController">
    <top>
       <Pane prefHeight="393.0" prefWidth="498.0" BorderPane.alignment="CENTER">
          <children>
-            <TextArea fx:id="txtResult" editable="false" layoutX="27.0" layoutY="176.0" prefHeight="168.0" prefWidth="448.0" />
+            <TextArea fx:id="txtResult" editable="false" layoutX="19.0" layoutY="176.0" prefHeight="168.0" prefWidth="495.0" />
             <Text layoutX="34.0" layoutY="66.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Inserire il numero di lettere:" />
             <Text layoutX="34.0" layoutY="108.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Insierire una parola da cercare:" />
             <Text layoutX="213.0" layoutY="27.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Lab7_Dizionario" />
-            <TextField fx:id="inputNumeroLettere" layoutX="260.0" layoutY="48.0" prefHeight="27.0" prefWidth="132.0" />
-            <TextField fx:id="inputParola" layoutX="260.0" layoutY="90.0" prefHeight="27.0" prefWidth="132.0" />
-            <Button fx:id="btnGeneraGrafo" layoutX="35.0" layoutY="137.0" mnemonicParsing="false" onAction="#doGeneraGrafo" prefHeight="27.0" prefWidth="106.0" text="Genera Grafo" />
-            <Button fx:id="btnTrovaVicini" layoutX="188.0" layoutY="137.0" mnemonicParsing="false" onAction="#doTrovaVicini" prefHeight="27.0" prefWidth="106.0" text="Trova vicini" />
-            <Button fx:id="btnTrovaGradoMax" layoutX="327.0" layoutY="137.0" mnemonicParsing="false" onAction="#doTrovaGradoMax" prefHeight="27.0" prefWidth="142.0" text="Trova grado max" />
+            <TextField fx:id="inputNumeroLettere" layoutX="260.0" layoutY="48.0" prefHeight="27.0" prefWidth="208.0" />
+            <TextField fx:id="inputParola" layoutX="260.0" layoutY="90.0" prefHeight="27.0" prefWidth="208.0" />
+            <Button fx:id="btnTuttiVicini" layoutX="417.0" layoutY="138.0" mnemonicParsing="false" onAction="#doTrovaTuttiVicini" text="TrovaTuttiVicini" />
+            <Button fx:id="btnGeneraGrafo" layoutX="14.0" layoutY="137.0" mnemonicParsing="false" onAction="#doGeneraGrafo" prefHeight="27.0" prefWidth="106.0" text="Genera Grafo" />
+            <Button fx:id="btnTrovaVicini" layoutX="141.0" layoutY="137.0" mnemonicParsing="false" onAction="#doTrovaVicini" prefHeight="27.0" prefWidth="106.0" text="Trova vicini" />
+            <Button fx:id="btnTrovaGradoMax" layoutX="271.0" layoutY="137.0" mnemonicParsing="false" onAction="#doTrovaGradoMax" prefHeight="27.0" prefWidth="130.0" text="Trova grado max" />
             <Button layoutX="410.0" layoutY="352.0" mnemonicParsing="false" onAction="#doReset" text="Reset" />
          </children>
       </Pane>

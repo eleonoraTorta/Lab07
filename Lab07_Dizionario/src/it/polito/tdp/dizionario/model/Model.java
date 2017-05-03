@@ -9,6 +9,7 @@ import org.jgrapht.UndirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleGraph;
+import org.jgrapht.traverse.BreadthFirstIterator;
 
 import it.polito.tdp.dizionario.db.WordDAO;
 
@@ -17,6 +18,7 @@ public class Model {
 	private WordDAO w;
 	private UndirectedGraph <String, DefaultEdge> grafo; 
 	private List <String> listaParole;
+	private List <String> listaTuttiVicini = new ArrayList <String>();
 	
 
 	public Model(){
@@ -94,5 +96,14 @@ public class Model {
 		risultato += maxVertex + ": grado " + max + "\n";
 		risultato += this.displayNeighbours(maxVertex);
 		return risultato;
+	}
+	
+	public List<String> trovaTuttiVicini(String parolaInserita){
+		this.createGraph(parolaInserita.length());
+		BreadthFirstIterator <String, DefaultEdge> bfv = new BreadthFirstIterator <> (grafo, parolaInserita);
+		while(bfv.hasNext()){
+			listaTuttiVicini.add(bfv.next());
+		}
+		return listaTuttiVicini;
 	}
 }

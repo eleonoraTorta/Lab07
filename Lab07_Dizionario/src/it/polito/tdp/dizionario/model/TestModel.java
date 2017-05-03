@@ -21,6 +21,10 @@ public class TestModel {
 		
 		System.out.println("Cerco il vertice con grado massimo...");
 		System.out.println(model.findMaxDegree());
+		
+		System.out.println();
+		System.out.println("Cerco tutti i vicini: ");
+		System.out.println(model.trovaTuttiVicini("ora"));
 	}
 
 }
