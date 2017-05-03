@@ -19,6 +19,7 @@ public class Model {
 	private UndirectedGraph <String, DefaultEdge> grafo; 
 	private List <String> listaParole;
 	private List <String> listaTuttiVicini = new ArrayList <String>();
+	private List <String> listaTuttiVicini2 = new ArrayList<String>();
 	
 
 	public Model(){
@@ -106,4 +107,24 @@ public class Model {
 		}
 		return listaTuttiVicini;
 	}
+	
+	public List<String> trovaTuttiVicini2(String parolaInserita){
+		this.createGraph(parolaInserita.length());
+		recursive(parolaInserita);
+		return listaTuttiVicini2;
+	}
+	
+	public void recursive(String vertex){
+		if(Graphs.neighborListOf(grafo,vertex).size() == 0){
+			return;
+		}
+		for(String s : Graphs.neighborListOf(grafo,vertex) ){
+			if(!listaTuttiVicini2.contains(s)){
+				listaTuttiVicini2.add(s);
+				recursive(s);
+			}
+		}
+	}
+	
+	
 }

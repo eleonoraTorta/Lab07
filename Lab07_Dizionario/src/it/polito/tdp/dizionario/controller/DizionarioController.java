@@ -107,8 +107,11 @@ public class DizionarioController {
 			inputNumeroLettere.setText(String.valueOf(parola.length()));
 			txtResult.appendText("Lista di tutti i vertici connessi a '" + parola + "':\n");
 			List <String> tuttiVicini = model.trovaTuttiVicini(parola);
+			txtResult.appendText(tuttiVicini.size() + "\n");
 			for(String s : tuttiVicini){
-				txtResult.appendText(s + "\n");
+				if(!s.equals(parola)){
+					txtResult.appendText(s + "\n");
+				}
 			}
 
 		} catch (RuntimeException re) {

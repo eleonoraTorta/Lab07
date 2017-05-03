@@ -23,8 +23,12 @@ public class TestModel {
 		System.out.println(model.findMaxDegree());
 		
 		System.out.println();
-		System.out.println("Cerco tutti i vicini: ");
+		System.out.println("Cerco tutti i vicini con il metodo della libreria: ");
 		System.out.println(model.trovaTuttiVicini("ora"));
+		
+		System.out.println();
+		System.out.println("Cerco tutti i vicini con la funzione ricorsiva: ");
+		System.out.println(model.trovaTuttiVicini2("ora"));
 	}
 
 }
