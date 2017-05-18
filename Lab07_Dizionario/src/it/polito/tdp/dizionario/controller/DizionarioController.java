@@ -40,12 +40,21 @@ public class DizionarioController {
 		inputNumeroLettere.clear();
 		inputParola.clear();
 		txtResult.clear();
-	//  bisogna "cancellare " il grafo?	
+		
+		inputNumeroLettere.setDisable(false);
+		btnGeneraGrafo.setDisable(false);
+		inputParola.setDisable(true);
+		btnTrovaVicini.setDisable(true);
+		btnTrovaGradoMax.setDisable(true);
+
 	}
 
 	@FXML
 	void doGeneraGrafo(ActionEvent event) {
 
+		inputParola.clear();
+		txtResult.clear();
+		
 		try {
 			String numeroLettere = inputNumeroLettere.getText();
 			if( inputNumeroLettere.getText().isEmpty()){
@@ -53,22 +62,34 @@ public class DizionarioController {
 			}
 			int numero = Integer.parseInt(numeroLettere);
 			List <String> grafo = this.model.createGraph(numero);
+			if(grafo != null){
+				txtResult.appendText("Trovate " + grafo.size() + " parole di lunghezza "+ numero + "\n");
+			} else{
+				txtResult.appendText("Trovate 0 parole di lunghezza "+ numero + "\n");
+			}
 			for(String s : grafo){
 				txtResult.appendText(s);
 			}
 			
+			inputNumeroLettere.setDisable(true);
+			btnGeneraGrafo.setDisable(true);
+			inputParola.setDisable(false);
+			btnTrovaVicini.setDisable(false);
+			btnTrovaGradoMax.setDisable(false);
+			
+		} catch (NumberFormatException nfe) {
+			txtResult.setText("Inserire un numero corretto di lettere!");
 		} catch (RuntimeException re) {
 			txtResult.setText(re.getMessage());
-		} 
+		}  
 	}
 
 	@FXML
 	void doTrovaGradoMax(ActionEvent event) {
 		
 		try {
-			// se non ce il grafo?
+			
 			txtResult.setText(model.findMaxDegree());
-			inputNumeroLettere.clear();
 
 		} catch (RuntimeException re) {
 			txtResult.setText(re.getMessage());
@@ -77,18 +98,25 @@ public class DizionarioController {
 
 	@FXML
 	void doTrovaVicini(ActionEvent event) {
-		
+		txtResult.clear();
+	
 		try {
 			String parola = inputParola.getText();
-			if( inputParola.getText().isEmpty()){
+			if( parola == null || parola.length() ==0){
 				txtResult.setText("ERRORE, nessuna parola inserita!");
+				return;
 			}
 			inputParola.setText(parola);
 			inputNumeroLettere.setText(String.valueOf(parola.length()));
 			txtResult.appendText("Lista dei vicini di '" + parola + "':\n");
 			List <String> vicini = model.displayNeighbours(parola);
-			for(String s : vicini){
-				txtResult.appendText(s + " ");
+			if( vicini== null){
+				txtResult.appendText("Non e` stato trovato nessun risultato\n");
+			}else{
+				txtResult.appendText(vicini.size() + "\n");
+				for(String s : vicini){
+					txtResult.appendText(s + " ");
+				}
 			}
 
 		} catch (RuntimeException re) {
@@ -98,19 +126,24 @@ public class DizionarioController {
 	
 	@FXML
 	void doTrovaTuttiVicini(ActionEvent event) {
+		txtResult.clear();
 		try {
 			String parola = inputParola.getText();
-			if( inputParola.getText().isEmpty()){
+			if( parola == null || parola.length() ==0){
 				txtResult.setText("ERRORE, nessuna parola inserita!");
 			}
 			inputParola.setText(parola);
 			inputNumeroLettere.setText(String.valueOf(parola.length()));
 			txtResult.appendText("Lista di tutti i vertici connessi a '" + parola + "':\n");
 			List <String> tuttiVicini = model.trovaTuttiVicini(parola);
-			txtResult.appendText(tuttiVicini.size() + "\n");
-			for(String s : tuttiVicini){
-				if(!s.equals(parola)){
-					txtResult.appendText(s + "\n");
+			if( tuttiVicini== null){
+				txtResult.appendText("Non e` stato trovato nessun risultato\n");
+			}else{
+				txtResult.appendText(tuttiVicini.size() + "\n");
+				for(String s : tuttiVicini){
+					if(!s.equals(parola)){
+						txtResult.appendText(s + "\n");
+					}
 				}
 			}
 
@@ -129,6 +162,11 @@ public class DizionarioController {
 		assert btnTrovaVicini != null : "fx:id=\"btnTrovaVicini\" was not injected: check your FXML file 'Dizionario.fxml'.";
 		assert btnTrovaGradoMax != null : "fx:id=\"btnTrovaTutti\" was not injected: check your FXML file 'Dizionario.fxml'.";
 		assert btnTrovaTuttiVicini != null : "fx:id=\"btnTrovaTuttiVicini\" was not injected: check your FXML file 'Dizionario.fxml'.";
+		
+		inputParola.setDisable(true);
+		btnTrovaVicini.setDisable(true);
+		btnTrovaGradoMax.setDisable(true);
+		
 	}
 
 	public void setModel(Model model) {

@@ -20,6 +20,7 @@ public class Model {
 	private List <String> listaParole;
 	private List <String> listaTuttiVicini = new ArrayList <String>();
 	private List <String> listaTuttiVicini2 = new ArrayList<String>();
+	private int numeroLettere = 0;
 	
 
 	public Model(){
@@ -32,6 +33,7 @@ public class Model {
 	
 	public List<String> createGraph(int numeroLettere) {
 		
+		this.numeroLettere = numeroLettere;
 		this.getWordsFixedLength(numeroLettere);
 		grafo = new SimpleGraph <String, DefaultEdge>(DefaultEdge.class);
 		
@@ -40,7 +42,7 @@ public class Model {
 			grafo.addVertex(s);
 		}
 		
-		//Aggiungo gli archi
+		//Aggiungo gli archi- VERSIONE MIA
 		for( String vertex  : grafo.vertexSet() ){
 			listaParole.remove(vertex);
 			for(int j =0; j<vertex.length(); j++){
@@ -59,6 +61,20 @@ public class Model {
 			listaParole.add(vertex);
 		}
 		
+		//Aggiungo gli archi - VERSIONI CLASSE
+		
+		//for(String vertex : listaParole){
+		
+		//Alternativa 1: uso il database: LENTO!!
+		// List <String> paroleSimili = w.getAllSimilarWords(vertex, numeroLettere);
+		
+		//ALternativa 2: uso il mio algoritmo in Java
+		//List <String> paroleSimili = Utils.getAllSimilarWords(listaParole, vertex, numeroLettere);
+		// for( String parolaSimile : paroleSimili)
+		//		grafo.addEdge(vertex, parolaSimile)
+		//}
+		
+	
 		//stampo il grafo
 		
 		List <String> archi = new ArrayList<String>();
@@ -80,7 +96,10 @@ public class Model {
 	}
 
 	public List<String> displayNeighbours(String parolaInserita) {
-		this.createGraph(parolaInserita.length());
+		
+		if (numeroLettere != parolaInserita.length())
+			throw new RuntimeException("La parola inserita ha una lunghezza differente rispetto al numero inserito.");
+
 		return Graphs.neighborListOf(grafo, parolaInserita);
 	}
 
@@ -93,23 +112,52 @@ public class Model {
 				maxVertex = vertex;
 			}
 		}
+		if( max != 0){
 		String risultato = "Grado massimo:\n";
 		risultato += maxVertex + ": grado " + max + "\n";
 		risultato += this.displayNeighbours(maxVertex);
 		return risultato;
+		}
+		else{
+			return "Non trovato.\n";
+		}
 	}
 	
+	//Ora voglio ottenere una lista di TUTTI i nodi raggiungibili nel grafo.
+	//Sono possibili 3 versioni
+	
+	//1)
+	//VERSIONE LIBRERIA JGRAPHT
 	public List<String> trovaTuttiVicini(String parolaInserita){
+		
+		if (numeroLettere != parolaInserita.length())
+			throw new RuntimeException("La parola inserita ha una lunghezza differente rispetto al numero inserito.");
+		
 		this.createGraph(parolaInserita.length());
+		
+		//Con BreadthFirstIterator
 		BreadthFirstIterator <String, DefaultEdge> bfv = new BreadthFirstIterator <> (grafo, parolaInserita);
 		while(bfv.hasNext()){
 			listaTuttiVicini.add(bfv.next());
 		}
+		
+		//Con DepthFirstIterator
+		//DepthFirstIterator <String, DefaultEdge> dfv = new DepthFirstIterator <> (grafo, parolaInserita);
+		//while(dfv.hasNext()){
+		//	listaTuttiVicini.add(dfv.next());
+		//}
+		
 		return listaTuttiVicini;
 	}
 	
+	//2)
+	//VERSIONE RICORSIVA
 	public List<String> trovaTuttiVicini2(String parolaInserita){
+		if (numeroLettere != parolaInserita.length())
+			throw new RuntimeException("La parola inserita ha una lunghezza differente rispetto al numero inserito.");
+		
 		this.createGraph(parolaInserita.length());
+		
 		recursive(parolaInserita);
 		return listaTuttiVicini2;
 	}
@@ -126,5 +174,58 @@ public class Model {
 		}
 	}
 	
+	//Funzione Ricorsiva opzione 2
+	protected void recursiveVisit(String n, List<String> visited) {
+		// Do always
+		visited.add(n);
+
+		for (String c : Graphs.neighborListOf(grafo, n)) {
+			if (!visited.contains(c))
+				recursiveVisit(c, visited);
+		}
+	}
+	
+	
+	//3)
+	//VERSIONE ITERATIVA
+	public List<String> trovaTuttiVicini3(String parolaInserita) {
+
+		if (numeroLettere != parolaInserita.length())
+			throw new RuntimeException("La parola inserita ha una lunghezza differente rispetto al numero inserito.");
+
+		// Creo due liste: quella dei noti visitati ..
+		List<String> visited = new LinkedList<String>();
+		// .. e quella dei nodi da visitare
+		List<String> toBeVisited = new LinkedList<String>();
+
+		// Aggiungo alla lista dei vertici visitati il nodo di partenza.
+		visited.add(parolaInserita);
+		// Aggiungo ai vertici da visitare tutti i vertici collegati a quello inserito
+		toBeVisited.addAll(Graphs.neighborListOf(grafo, parolaInserita));
+
+		while (!toBeVisited.isEmpty()) {
+
+			// Rimuovi il vertice in testa alla coda
+			String temp = toBeVisited.remove(0);
+
+			// Aggiungi il nodo alla lista di quelli visitati
+			visited.add(temp);
+
+			// Ottieni tutti i vicini di un nodo
+			List<String> listaDeiVicini = Graphs.neighborListOf(grafo, temp);
+
+			// Rimuovi da questa lista tutti quelli che hai già visitato..
+			listaDeiVicini.removeAll(visited);
+			// .. e quelli che sai già che devi visitare.
+			listaDeiVicini.removeAll(toBeVisited);
+
+			// Aggiungi i rimanenenti alla coda di quelli che devi visitare.
+			toBeVisited.addAll(listaDeiVicini);
+		}
+
+		// Ritorna la lista di tutti i nodi raggiungibili
+		return visited;
+	}
+
 	
 }
